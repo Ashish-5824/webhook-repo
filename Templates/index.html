@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub Webhook Events</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+  <script>
+    function fetchEvents() {
+      fetch('/events')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.getElementById("event-table-body");
+          tableBody.innerHTML = "";
+          data.forEach(event => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${event.timestamp}</td>
+              <td>${event.author}</td>
+              <td>${event.event_type}</td>
+              <td>${event.to_branch || '-'}</td>
+              <td>${event.from_branch || '-'}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+        });
+    }
+
+    setInterval(fetchEvents, 15000); // Refresh every 15 seconds
+    window.onload = fetchEvents;
+  </script>
+</head>
+<body>
+  <h2>Latest GitHub Webhook Events</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Author</th>
+        <th>Event Type</th>
+        <th>To Branch</th>
+        <th>From Branch</th>
+      </tr>
+    </thead>
+    <tbody id="event-table-body">
+      <!-- Populated by JavaScript -->
+    </tbody>
+  </table>
+</body>
+</html>
